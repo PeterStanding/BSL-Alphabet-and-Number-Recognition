@@ -1,0 +1,5 @@
+HandLandmarker HyperLink:
+https://ai.google.dev/edge/mediapipe/solutions/vision/hand_landmarker
+
+BSL DataSet:
+https://www.kaggle.com/datasets/erentatepe/bsl-numbers-and-alphabet-hand-position-for-mediapipe?select=two_hand_dataset.csv 

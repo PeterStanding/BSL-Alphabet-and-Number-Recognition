@@ -2,7 +2,14 @@ import cv2
 import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
-# https://ai.google.dev/edge/mediapipe/solutions/vision/hand_landmarker
+import pandas as pd
+
+# Reading the DataSets for both One and Two hands
+oneHand = pd.read_csv("one_hand_dataset.csv")
+twoHand = pd.read_csv("two_hand_dataset.csv")
+
+print("One Handed DataSet:", oneHand.shape)
+print(oneHand.head())
 
 base_options = python.BaseOptions(model_asset_path = 'hand_landmarker.task')
 options = vision.HandLandmarkerOptions(base_options = base_options,
@@ -14,7 +21,7 @@ options = vision.HandLandmarkerOptions(base_options = base_options,
 detector = vision.HandLandmarker.create_from_options(options)
 
 cap = cv2.VideoCapture(0)
-
+'''
 while cap.isOpened():
     ret, frame = cap.read()
     if not ret:
@@ -52,8 +59,8 @@ while cap.isOpened():
             pinky_pip = hand_landmarks[18]
             pinky_dip = hand_landmarks[19]
             pinky_tip = hand_landmarks[20]
-            # cv2.circle(img, center, radius, color, thickness=None, lineType=None, shift=None)
 
+            # cv2.circle(img, center, radius, color, thickness=None, lineType=None, shift=None)
             #Changing the Colour based on the hand
             right = (hand_landmarks[5].x>hand_landmarks[17].x)
 
@@ -152,7 +159,7 @@ while cap.isOpened():
             cv2.line(frame,(ppip_x,ppip_y), (pdip_x,pdip_y), (102,255,102),2)
             cv2.line(frame,(pdip_x,pdip_y), (ptip_x,ptip_y), (102,255,102),2)
 
-    cv2.imshow("Finger tips", frame)      
+    cv2.imshow("Sign Language Interpreter", frame)      
 
     #quitting
     if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -160,3 +167,4 @@ while cap.isOpened():
 
 cap.release()
 cv2.destroyAllWindows()
+'''
