@@ -8,4 +8,4 @@ Data Prediction and Loading from MediaPipe and Pickle:
 https://medium.com/@vinubalan2892002/realtime-hand-gesture-detection-dataset-collection-and-detection-in-python-scikit-learn-ed5fd896b35f 
 
 Similar GitHub:
-https://github.com/datMaul/BSL_Numbers_and_Alphabet_Recognition/blob/main/BSL_Numbers%26Alphabet_Recognition.ipynb?short_path=07c4e90 
+https://github.com/datMaul/BSL_Numbers_and_Alphabet_Recognition/tree/main
