@@ -1,13 +1,14 @@
-import cv2
+import cv2, time, pickle
 import mediapipe as mp
+import pandas as pd
+import numpy as np
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
-import pandas as pd
-import pickle
+from collections import Counter
 
 # Reading the DataSets for both One and Two hands
-oneHand = pd.read_csv("one_hand_dataset.csv")
-twoHand = pd.read_csv("two_hand_dataset.csv")
+with open('one_hand_model.pkl', 'rb') as f: one_hand_model = pickle.load(f)
+with open('two_hand_model.pkl', 'rb') as f: two_hand_model = pickle.load(f)
 
 
 base_options = python.BaseOptions(model_asset_path = 'hand_landmarker.task')
@@ -18,7 +19,7 @@ options = vision.HandLandmarkerOptions(base_options = base_options,
                                        min_tracking_confidence = 0.8)
 
 detector = vision.HandLandmarker.create_from_options(options)
-
+prediction_history = []
 cap = cv2.VideoCapture(0)
 
 while cap.isOpened():
@@ -27,12 +28,14 @@ while cap.isOpened():
         break
 
     frame = cv2.flip(frame,1)
+
     h,w,_ = frame.shape
     rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data = rgb_frame)
     results = detector.detect(mp_image)
 
     r = g = b = 0
+
     # Tracks the Hand landmarks Positions
     if results.hand_landmarks:
         for hand_landmarks in results.hand_landmarks:
@@ -158,8 +161,42 @@ while cap.isOpened():
             cv2.line(frame,(ppip_x,ppip_y), (pdip_x,pdip_y), (102,255,102),2)
             cv2.line(frame,(pdip_x,pdip_y), (ptip_x,ptip_y), (102,255,102),2)
 
+    # Counts the Number of hands Present in the Scene
+    hand_count = len(results.hand_landmarks)
+    label = ""
+
+    # USED GOOGLE AI FOR ASSISTANCE
+    # --- ONE HAND DETECTED --- 
+    if hand_count == 1:
+        data_63 = []
+        for lm in results.hand_landmarks[0]:
+            data_63.extend([lm.x, lm.y, lm.z])
+        prediction = one_hand_model.predict([np.asarray(data_63)])
+
+        prediction_history.append(prediction[0])
+        if len(prediction_history) > 20: prediction_history.pop(0)
+        most_common = Counter(prediction_history).most_common(1)
+        if most_common[0][1] > 15:
+            label = f"Sign: {most_common[0][0]}"
+        else:
+            label = "Scanning"
+    # --- TWO HANDS DETECTED ---
+    elif hand_count == 2:
+        hand0 = [coord for lm in results.hand_landmarks[0] for coord in [lm.x, lm.y, lm.z]]
+        hand1 = [coord for lm in results.hand_landmarks[1] for coord in [lm.x, lm.y, lm.z]]
+        data_126 = hand0 + hand1
+        prediction = two_hand_model.predict([np.asarray(data_126)])
+
+        prediction_history.append(prediction[0])
+        if len(prediction_history) > 20: prediction_history.pop(0)
+        most_common = Counter(prediction_history).most_common(1)
+        if most_common[0][1] > 15:
+            label = f"Sign: {most_common[0][0]}"
+        else:
+            label = "Scanning"
+
     #cv2.putText(image, text, org, font, fontScale, color, thickness=1, lineType=cv2.LINE_8, bottomLeftOrigin=False)      
-    cv2.putText(frame, "Testing", (30,40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
+    cv2.putText(frame, label, (30,40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
     cv2.imshow("Sign Language Interpreter", frame)
     
     #quitting
