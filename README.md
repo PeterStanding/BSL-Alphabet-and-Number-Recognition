@@ -9,6 +9,7 @@ Fundamentally it works, and does recognise the different BSL Alphabet characters
 
 All useful hyperlinks for the project can be found within the 'HyperLink.txt' file in the directory. The only thing I have not included is the dataset, but that can be found in the link below 👍
 
+Once the dataset has been downloaded, it needs to be saved in the same folder as 'main.py' otherwise the model links on lines 10 and 11 will need to be altered
 
 Dataset can be found here 👇
 
