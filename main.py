@@ -163,7 +163,7 @@ while cap.isOpened():
 
     #Draws the hand Skeletons
     draw_landmarks(results.hand_landmarks)
-    
+
     # Counts the Number of hands Present in the Scene
     hand_count = len(results.hand_landmarks)
     label = ""
@@ -174,12 +174,13 @@ while cap.isOpened():
         data_63 = []
         for lm in results.hand_landmarks[0]:
             data_63.extend([lm.x, lm.y, lm.z])
-        prediction = one_hand_model.predict([np.asarray(data_63)])
 
+        prediction = one_hand_model.predict([data_63])
         prediction_history.append(prediction[0])
-        if len(prediction_history) > 20: prediction_history.pop(0)
+        if len(prediction_history) > 40: prediction_history.pop(0)
+
         most_common = Counter(prediction_history).most_common(1)
-        if most_common[0][1] > 15:
+        if most_common[0][1] > 35:
             label = f"Sign: {most_common[0][0]}"
         else:
             label = "Scanning"
@@ -188,12 +189,13 @@ while cap.isOpened():
         hand0 = [coord for lm in results.hand_landmarks[0] for coord in [lm.x, lm.y, lm.z]]
         hand1 = [coord for lm in results.hand_landmarks[1] for coord in [lm.x, lm.y, lm.z]]
         data_126 = hand0 + hand1
-        prediction = two_hand_model.predict([np.asarray(data_126)])
 
+        prediction = two_hand_model.predict([np.asarray(data_126)])
         prediction_history.append(prediction[0])
-        if len(prediction_history) > 20: prediction_history.pop(0)
+        if len(prediction_history) > 40: prediction_history.pop(0)
+        
         most_common = Counter(prediction_history).most_common(1)
-        if most_common[0][1] > 15:
+        if most_common[0][1] > 35:
             label = f"Sign: {most_common[0][0]}"
         else:
             label = "Scanning"

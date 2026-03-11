@@ -9,3 +9,9 @@ https://medium.com/@vinubalan2892002/realtime-hand-gesture-detection-dataset-col
 
 Similar GitHub:
 https://github.com/datMaul/BSL_Numbers_and_Alphabet_Recognition/tree/main
+
+BSL Alphabet Image:
+https://deafaction.org/bsl-courses/learn-the-bsl-alphabet/
+
+BSL Numbers Image:
+https://www.british-sign.co.uk/bsl-vocabulary-sheet-creator/
