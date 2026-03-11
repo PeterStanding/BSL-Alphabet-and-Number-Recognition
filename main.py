@@ -22,23 +22,9 @@ detector = vision.HandLandmarker.create_from_options(options)
 prediction_history = []
 cap = cv2.VideoCapture(0)
 
-while cap.isOpened():
-    ret, frame = cap.read()
-    if not ret:
-        break
-
-    frame = cv2.flip(frame,1)
-
-    h,w,_ = frame.shape
-    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data = rgb_frame)
-    results = detector.detect(mp_image)
-
-    r = g = b = 0
-
-    # Tracks the Hand landmarks Positions
-    if results.hand_landmarks:
-        for hand_landmarks in results.hand_landmarks:
+def draw_landmarks(lmk):
+    if lmk:
+        for hand_landmarks in lmk:
             # Different HandLandmarks
             wrist = hand_landmarks[0]
             thumb_cmc = hand_landmarks[1]
@@ -161,6 +147,23 @@ while cap.isOpened():
             cv2.line(frame,(ppip_x,ppip_y), (pdip_x,pdip_y), (102,255,102),2)
             cv2.line(frame,(pdip_x,pdip_y), (ptip_x,ptip_y), (102,255,102),2)
 
+while cap.isOpened():
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    frame = cv2.flip(frame,1)
+
+    h,w,_ = frame.shape
+    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data = rgb_frame)
+    results = detector.detect(mp_image)
+
+    r = g = b = 0
+
+    #Draws the hand Skeletons
+    draw_landmarks(results.hand_landmarks)
+    
     # Counts the Number of hands Present in the Scene
     hand_count = len(results.hand_landmarks)
     label = ""
